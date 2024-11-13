@@ -4,7 +4,8 @@
     "package": "solignomiki.writingsheets.mixin",
     "compatibilityLevel": "JAVA_8",
     "mixins": [
-      "EntityPlayerMixin"
+      "EntityPlayerMixin",
+      "EntityPlayerSPMixin"
     ],
     "client": [
     ],

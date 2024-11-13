@@ -4,9 +4,9 @@
   "version": "${version}",
 
   "name": "BTA Writing Sheets",
-  "description": "",
+  "description": "Adds sheets that you can use to write things down on them",
   "authors": [
-    "Sol i Gnomiki"
+    "solignomiki"
   ],
   "contact": {
     "homepage": "",
@@ -28,7 +28,7 @@
 			"solignomiki.writingsheets.WritingSheets"
 		],
 		"recipesReady": [
-			"solignomiki.writingsheets.WritingSheets"
+			"solignomiki.writingsheets.recipes.ModRecipes"
 		]
 	},
   "mixins": [

@@ -6,11 +6,12 @@ import net.minecraft.core.block.BlockSign;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import solignomiki.writingsheets.item.ModItems;
+import solignomiki.writingsheets.recipes.ModRecipes;
 import turniplabs.halplibe.util.GameStartEntrypoint;
 import turniplabs.halplibe.util.RecipeEntrypoint;
 
 
-public class WritingSheets implements ModInitializer, GameStartEntrypoint, RecipeEntrypoint {
+public class WritingSheets implements ModInitializer, GameStartEntrypoint {
     public static final String MOD_ID = "writingsheets";
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
     @Override
@@ -27,16 +28,6 @@ public class WritingSheets implements ModInitializer, GameStartEntrypoint, Recip
 
 	@Override
 	public void afterGameStart() {
-
-	}
-
-	@Override
-	public void onRecipesReady() {
-
-	}
-
-	@Override
-	public void initNamespaces() {
 
 	}
 }
