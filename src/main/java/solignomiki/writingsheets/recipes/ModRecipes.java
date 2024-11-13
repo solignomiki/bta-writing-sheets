@@ -11,6 +11,7 @@ import net.minecraft.core.data.registry.recipe.entry.RecipeEntryCrafting;
 import net.minecraft.core.data.registry.recipe.entry.RecipeEntryLabel;
 import net.minecraft.core.item.Item;
 import net.minecraft.core.item.ItemStack;
+import org.lwjgl.Sys;
 import solignomiki.writingsheets.Utilities;
 import solignomiki.writingsheets.WritingSheets;
 import solignomiki.writingsheets.item.ModItems;
@@ -35,10 +36,12 @@ public class ModRecipes implements RecipeEntrypoint {
 
 	@Override
 	public void onRecipesReady() {
+		System.out.println("onRecipesReady");
 		init();
 	}
 	@Override
 	public void initNamespaces() {
+		System.out.println("initNamespaces");
 		registerNamespaces();
 	}
 
