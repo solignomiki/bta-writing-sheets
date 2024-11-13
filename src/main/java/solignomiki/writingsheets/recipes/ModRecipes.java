@@ -35,7 +35,6 @@ public class ModRecipes implements RecipeEntrypoint {
 
 	@Override
 	public void onRecipesReady() {
-		registerNamespaces();
 		init();
 	}
 	@Override
@@ -48,7 +47,7 @@ public class ModRecipes implements RecipeEntrypoint {
 		Registries.RECIPES.register(WritingSheets.MOD_ID, RN);
 		WORKBENCH = new RecipeGroup<>(new RecipeSymbol(new ItemStack(Block.workbench)));
 		RN.register("workbench", WORKBENCH);
-		WRITING_SHEETS.register("writingsheet",WORKBENCH);
+		WRITING_SHEETS.register("writingsheets",WORKBENCH);
 		Registries.RECIPES.register("writingsheets",WRITING_SHEETS);
 	}
 
