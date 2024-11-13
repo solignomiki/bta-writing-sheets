@@ -21,12 +21,23 @@ import turniplabs.halplibe.helper.RecipeBuilder;
 import turniplabs.halplibe.util.RecipeEntrypoint;
 
 public class ModRecipes implements RecipeEntrypoint {
-	public static RecipeNamespace RN;
 	public static RecipeNamespaceWritingSheets WRITING_SHEETS = new RecipeNamespaceWritingSheets();
 	public static RecipeGroup<RecipeEntryCrafting<?, ?>> WORKBENCH;
 
 
-	public static void init() {
+	@Override
+	public void onRecipesReady() {
+		resetGroups();
+		registerNamespaces();
+		load();
+	}
+	@Override
+	public void initNamespaces() {
+		resetGroups();
+		registerNamespaces();
+	}
+
+	public void load() {
 		RecipeBuilder.Shapeless(WritingSheets.MOD_ID)
 			.addInput(Item.paper)
 			.addInput(new ItemStack(Item.dye, 1, 0))
@@ -34,23 +45,14 @@ public class ModRecipes implements RecipeEntrypoint {
 		;
 	}
 
-	@Override
-	public void onRecipesReady() {
-		System.out.println("onRecipesReady");
-		init();
-	}
-	@Override
-	public void initNamespaces() {
-		System.out.println("initNamespaces");
-		registerNamespaces();
+	public void resetGroups(){
+		WRITING_SHEETS = new RecipeNamespaceWritingSheets();
+		WORKBENCH = new RecipeGroup<>(new RecipeSymbol(new ItemStack(Block.workbench)));
 	}
 
+
 	public void registerNamespaces(){
-		RN = new RecipeNamespace();
-		Registries.RECIPES.register(WritingSheets.MOD_ID, RN);
-		WORKBENCH = new RecipeGroup<>(new RecipeSymbol(new ItemStack(Block.workbench)));
-		RN.register("workbench", WORKBENCH);
-		WRITING_SHEETS.register("writingsheets",WORKBENCH);
+		WRITING_SHEETS.register("workbench",WORKBENCH);
 		Registries.RECIPES.register("writingsheets",WRITING_SHEETS);
 	}
 
