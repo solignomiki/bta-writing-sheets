@@ -3,25 +3,23 @@ package solignomiki.writingsheets.gui;
 import com.mojang.nbt.CompoundTag;
 import net.minecraft.client.gui.*;
 
-import net.minecraft.client.gui.popup.LabelComponent;
-import net.minecraft.client.render.item.model.ItemModelLabel;
-import net.minecraft.core.block.BlockSign;
-import net.minecraft.core.data.registry.Registry;
-import net.minecraft.core.item.Item;
-import net.minecraft.core.item.ItemFlag;
-import net.minecraft.core.item.ItemLabel;
 import net.minecraft.core.item.ItemStack;
 import net.minecraft.core.lang.I18n;
 import net.minecraft.core.net.command.TextFormatting;
-import net.minecraft.core.net.packet.Packet137SetItemName;
+import net.minecraft.core.net.packet.Packet250CustomPayload;
 import net.minecraft.core.util.helper.ChatAllowedCharacters;
+import net.minecraft.server.net.handler.NetServerHandler;
+import org.lwjgl.Sys;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
+import solignomiki.writingsheets.WritingSheets;
 
-//GuiEditLabel
-//ItemLabel
-//Registry
-//ItemModelLabel
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.util.Arrays;
+
+
 public class GuiEditSheet extends GuiScreen {
 	private static final String allowedCharacters;
 	protected ItemStack item;
@@ -125,7 +123,24 @@ public class GuiEditSheet extends GuiScreen {
 			sheetData.putString("Text_" + i, text[i]);
 		}
 
+		nbt.putCompound("SheetData", sheetData);
+		item.setData(nbt);
+		if (this.mc.theWorld.isClientSide) {
+			ByteArrayOutputStream byteOutput = new ByteArrayOutputStream();
+			DataOutputStream dataOutputStream = new DataOutputStream(byteOutput);
+			try {
+				for (String str : text) {
+					dataOutputStream.writeUTF(str);
+				}
+			} catch (IOException e) {
+				WritingSheets.LOGGER.error("IOException occurred in encoding!", e);
+			}
 
+			byte[] data = byteOutput.toByteArray();
+			if (data.length != 0) {
+				this.mc.getSendQueue().addToSendQueue(new Packet250CustomPayload("writingsheets|text", data));
+			}
+		}
 		if (!sheetData.getBoolean("IsWritten")) {
 			int emptyRows = 0;
 			for (int i = 0; i < 16; i++) {
@@ -140,9 +155,6 @@ public class GuiEditSheet extends GuiScreen {
 			}
 
 		}
-
-		nbt.putCompound("SheetData", sheetData);
-		item.setData(nbt);
 	}
 
 	static {

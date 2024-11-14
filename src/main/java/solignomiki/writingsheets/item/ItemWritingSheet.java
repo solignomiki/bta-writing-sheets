@@ -26,8 +26,6 @@ public class ItemWritingSheet extends Item {
 
 		sheetData = stack.getData().getCompoundOrDefault("SheetData", new CompoundTag());
 		stack.getData().putCompound("SheetData", sheetData);
-		//ItemLabel
-		//ItemModelLabel
 
 		((solignomiki.writingsheets.interfaces.EntityPlayer)player).displayGUIEditSheet(stack, slot);
 		return stack;
