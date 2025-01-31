@@ -1,15 +1,15 @@
 package solignomiki.writingsheets.gui;
 
-import com.mojang.nbt.CompoundTag;
+import com.mojang.nbt.tags.CompoundTag;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.*;
 
 import net.minecraft.core.item.ItemStack;
 import net.minecraft.core.lang.I18n;
 import net.minecraft.core.net.command.TextFormatting;
-import net.minecraft.core.net.packet.Packet250CustomPayload;
+import net.minecraft.core.net.packet.PacketCustomPayload;
 import net.minecraft.core.util.helper.ChatAllowedCharacters;
-import net.minecraft.server.net.handler.NetServerHandler;
-import org.lwjgl.Sys;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 import solignomiki.writingsheets.WritingSheets;
@@ -17,10 +17,8 @@ import solignomiki.writingsheets.WritingSheets;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.util.Arrays;
 
-
-public class GuiEditSheet extends GuiScreen {
+public class ScreenSheetEditor extends Screen {
 	private static final String allowedCharacters;
 	protected ItemStack item;
 	protected byte color;
@@ -31,7 +29,7 @@ public class GuiEditSheet extends GuiScreen {
 	private String title = "";
 	private String[] text = new String[]{"", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""};
 
-	public GuiEditSheet(ItemStack item, int slot) {
+	public ScreenSheetEditor(ItemStack item, int slot) {
 		this.item = item;
 
 		this.color = 15;
@@ -47,71 +45,74 @@ public class GuiEditSheet extends GuiScreen {
 		}
 	}
 
-	public void drawScreen(int mouseX, int mouseY, float f) {
-		this.drawDefaultBackground();
-		int bgTex = this.mc.renderEngine.getTexture("/assets/writingsheets/textures/gui/sheet.png");
+	public void render(int mouseX, int mouseY, float f) {
+		this.renderBackground();
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-		this.mc.renderEngine.bindTexture(bgTex);
+		this.mc.textureManager.loadTexture("/assets/writingsheets/textures/gui/sheet.png").bind();
 		int widthBG = this.width / 2 - 80;
 		this.drawTexturedModalRect(widthBG, 10, 0, 0, 175, 221);
 
 		if (this.item.hasCustomName()) this.title = this.item.getCustomName();
 		else this.title = this.item.getDisplayName();
 
-		this.drawString(this.fontRenderer, this.title, 10, 10, -1);
+		this.drawString(this.font, this.title, 10, 10, -1);
 
 		for (int i = 0; i < 16; i++) {
 
-			this.drawStringNoShadow(this.fontRenderer, TextFormatting.get(this.color) + this.text[i], this.width / 2 - 57, 25 + (i * 12), 16777215);
+			this.drawStringNoShadow(this.font, TextFormatting.get(this.color) + this.text[i], this.width / 2 - 57, 25 + (i * 12), 16777215);
 			if (i == editLine) {
-				int textWidth = this.fontRenderer.getStringWidth(this.text[i]);
-				this.drawStringNoShadow(this.fontRenderer, TextFormatting.get(this.color) + "> ", this.width / 2 - 57 - 10, 25 + (i * 12), 16777215);
-				this.drawStringNoShadow(this.fontRenderer, TextFormatting.get(this.color) + " <", this.width / 2 - 57 + textWidth + 3, 25 + (i * 12), 16777215);
+				int textWidth = this.font.getStringWidth(this.text[i]);
+				this.drawStringNoShadow(this.font, TextFormatting.get(this.color) + "> ", this.width / 2 - 57 - 10, 25 + (i * 12), 16777215);
+				this.drawStringNoShadow(this.font, TextFormatting.get(this.color) + " <", this.width / 2 - 57 + textWidth + 3, 25 + (i * 12), 16777215);
 			}
 		}
-		super.drawScreen(mouseX, mouseY, f);
+		super.render(mouseX, mouseY, f);
 	}
 
 	public void init() {
-		this.controlList.clear();
+		this.buttons.clear();
 		Keyboard.enableRepeatEvents(true);
-		this.controlList.add(new GuiButton(0, this.width / 2 - 100, this.height / 4 + 170, I18n.getInstance().translateKey("gui.edit_label.button.done")));
+		this.buttons.add(new ButtonElement(0, this.width / 2 - 100, this.height / 4 + 170, I18n.getInstance().translateKey("gui.edit_label.button.done")));
 	}
 
-	public void keyTyped(char c, int i, int mouseX, int mouseY) {
+	public void keyPressed(char eventCharacter, int eventKey, int mx, int my) {
 
-		if (i == 1) {
+		if (eventKey == Keyboard.KEY_ESCAPE) {
 			this.save();
-			this.mc.displayGuiScreen((GuiScreen)null);
+			this.mc.displayScreen((Screen)null);
 		}
 
-		if (i == 200) {
+		if (eventKey == Keyboard.KEY_UP) {
 			this.editLine = (this.editLine - 1 + 16) % 16;
 		}
 
-		if (i == 208 || i == 28 || i == 156) {
+		if (
+			eventKey == Keyboard.KEY_DOWN ||
+			eventKey == Keyboard.KEY_RETURN ||
+			eventKey == Keyboard.KEY_NUMPADENTER
+		) {
 			this.editLine = (this.editLine + 1) % 16;
 		}
 
-		if (i == 14 && this.text[this.editLine].length() > 0) {
+		if (eventKey == Keyboard.KEY_BACK && !this.text[this.editLine].isEmpty()) {
 			this.text[this.editLine] = this.text[this.editLine].substring(0, this.text[this.editLine].length() - 1);
 		}
 
-		if ((allowedCharacters.indexOf(c) >= 0 || Character.isLetterOrDigit(c)) && this.fontRenderer.getStringWidth(this.text[this.editLine]) < 125) {
+		if ((allowedCharacters.indexOf(eventCharacter) >= 0 || Character.isLetterOrDigit(eventCharacter)) && this.font.getStringWidth(this.text[this.editLine]) < 125) {
 			StringBuilder stringBuilder = new StringBuilder();
 			String[] textArray = this.text;
 			int editLine = this.editLine;
-			textArray[editLine] = stringBuilder.append(textArray[editLine]).append(c).toString();
+			textArray[editLine] = stringBuilder.append(textArray[editLine]).append(eventCharacter).toString();
 		}
 
 	}
 
-	protected void buttonPressed(GuiButton button) {
+	protected void buttonClicked(ButtonElement button) {
 		this.save();
-		this.mc.displayGuiScreen((GuiScreen)null);
+		this.mc.displayScreen((Screen)null);
 	}
 
-	public void onClosed() {
+	public void removed() {
 		Keyboard.enableRepeatEvents(false);
 	}
 
@@ -125,7 +126,7 @@ public class GuiEditSheet extends GuiScreen {
 
 		nbt.putCompound("SheetData", sheetData);
 		item.setData(nbt);
-		if (this.mc.theWorld.isClientSide) {
+		if (this.mc.currentWorld.isClientSide) {
 			ByteArrayOutputStream byteOutput = new ByteArrayOutputStream();
 			DataOutputStream dataOutputStream = new DataOutputStream(byteOutput);
 			try {
@@ -138,7 +139,7 @@ public class GuiEditSheet extends GuiScreen {
 
 			byte[] data = byteOutput.toByteArray();
 			if (data.length != 0) {
-				this.mc.getSendQueue().addToSendQueue(new Packet250CustomPayload("writingsheets|text", data));
+				this.mc.getSendQueue().addToSendQueue(new PacketCustomPayload("WritingSheets|Text", data));
 			}
 		}
 		if (!sheetData.getBoolean("IsWritten")) {

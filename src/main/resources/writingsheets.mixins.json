@@ -4,13 +4,15 @@
     "package": "solignomiki.writingsheets.mixin",
     "compatibilityLevel": "JAVA_8",
     "mixins": [
-      "EntityPlayerMixin",
-      "EntityPlayerSPMixin",
-      "NetServerHandlerMixin"
+      "PlayerMixin"
     ],
     "client": [
+      "PlayerLocalMixin"
+    ],
+    "server": [
+      "PacketHandlerServerMixin"
     ],
     "injectors": {
         "defaultRequire": 1
-  }
+    }
 }

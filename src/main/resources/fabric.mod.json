@@ -3,7 +3,7 @@
   "id": "writingsheets",
   "version": "${version}",
 
-  "name": "BTA Writing Sheets",
+  "name": "Writing Sheets",
   "description": "Adds sheets that you can use to write things down on them",
   "authors": [
     "solignomiki"

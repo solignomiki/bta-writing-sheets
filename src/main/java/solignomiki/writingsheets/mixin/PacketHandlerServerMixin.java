@@ -1,44 +1,35 @@
 package solignomiki.writingsheets.mixin;
 
-import com.mojang.nbt.CompoundTag;
-import net.minecraft.core.enums.PlacementMode;
-import net.minecraft.core.net.handler.NetHandler;
-import net.minecraft.core.net.packet.Packet250CustomPayload;
-import net.minecraft.core.net.packet.Packet72UpdatePlayerProfile;
-import net.minecraft.core.player.inventory.ContainerFlag;
-import net.minecraft.core.util.helper.Direction;
-import net.minecraft.server.entity.player.EntityPlayerMP;
-import net.minecraft.server.net.handler.NetServerHandler;
-import org.lwjgl.Sys;
+import com.mojang.nbt.tags.CompoundTag;
+import net.minecraft.core.net.handler.PacketHandler;
+import net.minecraft.core.net.packet.PacketCustomPayload;
+import net.minecraft.server.entity.player.PlayerServer;
+import net.minecraft.server.net.handler.PacketHandlerServer;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import solignomiki.writingsheets.WritingSheets;
-import solignomiki.writingsheets.item.ItemWritingSheet;
 import solignomiki.writingsheets.item.ModItems;
 
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
-import java.util.Iterator;
 
-@Mixin(value = NetServerHandler.class)
-public abstract class NetServerHandlerMixin extends NetHandler {
+@Mixin(value = PacketHandlerServer.class)
+public abstract class PacketHandlerServerMixin extends PacketHandler {
 	@Shadow()
-	private EntityPlayerMP playerEntity;
+	private PlayerServer playerEntity;
 
 	@Inject(
 		method = "handleCustomPayload(Lnet/minecraft/core/net/packet/Packet250CustomPayload;)V",
 		at = @At("TAIL"),
 		remap = false
 	)
-	public void handleCustomPayload(Packet250CustomPayload packet, CallbackInfo ci) {
-		if ("writingsheets|text".equals(packet.channel)) {
-			if (this.playerEntity.getHeldItem().getItem() == ModItems.writingSheetItem) {
+	public void handleCustomPayload(PacketCustomPayload packet, CallbackInfo ci) {
+		if ("WritingSheets|Text".equals(packet.channel)) {
+			if (this.playerEntity.getHeldItem().getItem().equals(ModItems.writingSheetItem)) {
 				ByteArrayInputStream byteInput = new ByteArrayInputStream(packet.data);
 				DataInputStream dataInputStream = new DataInputStream(byteInput);
 
