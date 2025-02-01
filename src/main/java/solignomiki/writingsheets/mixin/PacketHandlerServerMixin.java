@@ -1,6 +1,7 @@
 package solignomiki.writingsheets.mixin;
 
 import com.mojang.nbt.tags.CompoundTag;
+import net.fabricmc.api.Environment;
 import net.minecraft.core.net.handler.PacketHandler;
 import net.minecraft.core.net.packet.PacketCustomPayload;
 import net.minecraft.server.entity.player.PlayerServer;
@@ -23,13 +24,16 @@ public abstract class PacketHandlerServerMixin extends PacketHandler {
 	private PlayerServer playerEntity;
 
 	@Inject(
-		method = "handleCustomPayload(Lnet/minecraft/core/net/packet/Packet250CustomPayload;)V",
+		method = "handleCustomPayload(Lnet/minecraft/core/net/packet/PacketCustomPayload;)V",
 		at = @At("TAIL"),
 		remap = false
 	)
 	public void handleCustomPayload(PacketCustomPayload packet, CallbackInfo ci) {
 		if ("WritingSheets|Text".equals(packet.channel)) {
-			if (this.playerEntity.getHeldItem().getItem().equals(ModItems.writingSheetItem)) {
+			if (
+				this.playerEntity.getHeldItem() != null &&
+				this.playerEntity.getHeldItem().getItem().equals(ModItems.writingSheetItem)
+			) {
 				ByteArrayInputStream byteInput = new ByteArrayInputStream(packet.data);
 				DataInputStream dataInputStream = new DataInputStream(byteInput);
 

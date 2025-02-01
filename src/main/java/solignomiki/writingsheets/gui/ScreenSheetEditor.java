@@ -3,20 +3,27 @@ package solignomiki.writingsheets.gui;
 import com.mojang.nbt.tags.CompoundTag;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.*;
 
+import net.minecraft.client.gui.guidebook.GuidebookPage;
+import net.minecraft.client.gui.guidebook.index.GuidebookPageIndex;
+import net.minecraft.client.gui.guidebook.search.GuidebookPageSearch;
 import net.minecraft.core.item.ItemStack;
 import net.minecraft.core.lang.I18n;
 import net.minecraft.core.net.command.TextFormatting;
 import net.minecraft.core.net.packet.PacketCustomPayload;
+import net.minecraft.core.sound.SoundCategory;
 import net.minecraft.core.util.helper.ChatAllowedCharacters;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 import solignomiki.writingsheets.WritingSheets;
+import turniplabs.halplibe.HalpLibe;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.util.Random;
 
 public class ScreenSheetEditor extends Screen {
 	private static final String allowedCharacters;
@@ -24,18 +31,34 @@ public class ScreenSheetEditor extends Screen {
 	protected byte color;
 	protected int xSize;
 	protected int ySize;
-	protected int slot;
+//	protected int slot;
 	private int editLine = 0;
 	private String title = "";
 	private String[] text = new String[]{"", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""};
+	private boolean canPlaySound = true;
 
-	public ScreenSheetEditor(ItemStack item, int slot) {
+//	public ScreenSheetEditor(ItemStack item, int slot) {
+//		this.item = item;
+//
+//		this.color = 15;
+//		this.xSize = 176;
+//		this.ySize = 166;
+//		this.slot = slot;
+//
+//		CompoundTag nbt = item.getData();
+//		CompoundTag sheetData = nbt.getCompound("SheetData");
+//		for (int i = 0; i < 16; i++) {
+//			String textLine = sheetData.getString("Text_" + i);
+//			text[i] = textLine;
+//		}
+//	}
+
+	public ScreenSheetEditor(ItemStack item) {
 		this.item = item;
 
 		this.color = 15;
 		this.xSize = 176;
 		this.ySize = 166;
-		this.slot = slot;
 
 		CompoundTag nbt = item.getData();
 		CompoundTag sheetData = nbt.getCompound("SheetData");
@@ -126,7 +149,7 @@ public class ScreenSheetEditor extends Screen {
 
 		nbt.putCompound("SheetData", sheetData);
 		item.setData(nbt);
-		if (this.mc.currentWorld.isClientSide) {
+		if (HalpLibe.isClient) {
 			ByteArrayOutputStream byteOutput = new ByteArrayOutputStream();
 			DataOutputStream dataOutputStream = new DataOutputStream(byteOutput);
 			try {
@@ -155,6 +178,19 @@ public class ScreenSheetEditor extends Screen {
 				sheetData.putBoolean("IsWritten", true);
 			}
 
+		}
+	}
+
+	public void tick() {
+		super.tick();
+		this.canPlaySound = true;
+	}
+
+	public void playPageSound() {
+		if (this.canPlaySound) {
+			this.canPlaySound = false;
+			Random r = new Random();
+			this.mc.sndManager.playSound("random.page", SoundCategory.GUI_SOUNDS, 0.9F, 1F + (r.nextFloat() - r.nextFloat()) * 0.3F);
 		}
 	}
 

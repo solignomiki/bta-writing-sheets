@@ -29,6 +29,9 @@
 		],
 		"recipesReady": [
 			"solignomiki.writingsheets.recipes.ModRecipes"
+		],
+		"initModels": [
+			"solignomiki.writingsheets.ModModels"
 		]
 	},
   "mixins": [

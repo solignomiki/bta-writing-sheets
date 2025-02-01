@@ -1,7 +1,5 @@
 package solignomiki.writingsheets.mixin;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.PlayerLocal;
 import net.minecraft.core.entity.player.Player;
@@ -22,8 +20,9 @@ abstract public class PlayerLocalMixin extends Player implements solignomiki.wri
 	}
 
 	@Unique()
-	public void displayEditSheetScreen(ItemStack itemstack, int slot) {
-		System.out.println("showw_local");
-		this.mc.displayScreen(new ScreenSheetEditor(itemstack, slot));
+	public void displayEditSheetScreen(ItemStack itemstack) {
+		ScreenSheetEditor screenEditor = new ScreenSheetEditor(itemstack);
+		this.mc.displayScreen(screenEditor);
+		screenEditor.playPageSound();
 	}
 }

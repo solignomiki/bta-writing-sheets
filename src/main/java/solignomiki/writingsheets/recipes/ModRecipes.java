@@ -16,19 +16,14 @@ public class ModRecipes implements RecipeEntrypoint {
 
 	@Override
 	public void onRecipesReady() {
-
-		System.out.println("onRecipesReady");
 		RecipeBuilder.Shapeless(WritingSheets.MOD_ID)
 			.addInput(Items.PAPER)
 			.addInput(new ItemStack(Items.DYE, 1, 0))
 			.create("writingsheet", ModItems.writingSheetItem.getDefaultStack());
-		System.out.println("Recipes created");
 	}
 	@Override
 	public void initNamespaces() {
-		System.out.println("Initializing namespaces");
 		RecipeBuilder.initNameSpace(WritingSheets.MOD_ID);
-		System.out.println("Namespaces initialized");
 	}
 
 }

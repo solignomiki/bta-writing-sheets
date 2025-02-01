@@ -15,8 +15,8 @@ import org.jetbrains.annotations.Nullable;
 @Environment(EnvType.CLIENT)
 public class ItemModelWritingSheet extends ItemModelStandard {
 
-	public IconCoordinate sheetEmpty = TextureRegistry.getTexture("writingsheets:item/emptywritingsheet");
-	public IconCoordinate sheetWritten = TextureRegistry.getTexture("writingsheets:item/writingsheet");
+	public final IconCoordinate sheetEmpty = TextureRegistry.getTexture("writingsheets:item/emptywritingsheet");
+	public final IconCoordinate sheetWritten = TextureRegistry.getTexture("writingsheets:item/writingsheet");
 
 	public ItemModelWritingSheet(Item item, String namespace) {
 		super(item, namespace);

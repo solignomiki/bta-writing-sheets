@@ -29,51 +29,13 @@ public class ModItems {
 	@Nullable
 	private static String overrideKey = null;
 
-	public static Item writingSheetItem;
-
-//	public static Item writingSheetItem;
-//	public static Item writingSheetItem = new ItemBuilder(WritingSheets.MOD_ID)
-//		.setIcon(WritingSheets.MOD_ID + ":writingSheetItem/emptywritingsheet")
-//		.setItemModel((writingSheetItem) -> new ItemModelWritingSheet(writingSheetItem, WritingSheets.MOD_ID))
-//		.setStackSize(1)
-//		.setKey("writingsheets.writingsheet")
-//		.build(new ItemWritingSheet(new NamespaceID("writingsheets", "writingsheet"), Utilities.nextID()));
-
-	static {
-
-//		writingSheetItem = new ItemBuilder(WritingSheets.MOD_ID)
-//			.setIcon(WritingSheets.MOD_ID + ":writingSheetItem/emptywritingsheet")
-//			.setItemModel((writingSheetItem) -> new ItemModelWritingSheet(writingSheetItem, WritingSheets.MOD_ID))
-//			.setStackSize(1)
-//			.setKey("writingsheets.writingsheet")
-//			.build(new ItemWritingSheet(new NamespaceID("writingsheets", "writingsheet"), Utilities.nextID()));
-	}
+	public static Item writingSheetItem = new ItemBuilder(WritingSheets.MOD_ID)
+		.setStackSize(1)
+		.setKey("writingsheets.writingsheet")
+		.build(new ItemWritingSheet(new NamespaceID("writingsheets", "writingsheet"), Utilities.nextID()));
 
 	public static void init() {
 
-		stackSize = 1;
-		overrideKey = "writingsheets.writingsheet";
-
-		writingSheetItem = new ItemWritingSheet(new NamespaceID("writingsheets", "writingsheet"), Utilities.nextID());
-
-		List<String> tokens;
-
-		if (overrideKey != null){
-			tokens = Arrays.stream(overrideKey.split("\\.")).collect(Collectors.toList());
-		} else {
-			tokens = Arrays.stream(writingSheetItem.getKey().split("\\.")).collect(Collectors.toList());
-		}
-
-
-		if (stackSize != null){
-			writingSheetItem.setMaxStackSize(stackSize);
-		}
-
-		List<String> newTokens = new ArrayList<>();
-		newTokens.add(WritingSheets.MOD_ID);
-		newTokens.addAll(tokens.subList(1, tokens.size()));
-
-		writingSheetItem.setKey(StringUtils.join(newTokens, "."));
 	}
 
 }
