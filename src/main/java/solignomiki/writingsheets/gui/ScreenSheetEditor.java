@@ -71,7 +71,7 @@ public class ScreenSheetEditor extends Screen {
 	public void render(int mouseX, int mouseY, float f) {
 		this.renderBackground();
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-		this.mc.textureManager.loadTexture("/assets/writingsheets/textures/gui/sheet.png").bind();
+		this.mc.textureManager.loadTexture("/assets/writingsheets/textures/gui/sheet_2.png").bind();
 		int widthBG = this.width / 2 - 80;
 		this.drawTexturedModalRect(widthBG, 10, 0, 0, 175, 221);
 
@@ -149,7 +149,7 @@ public class ScreenSheetEditor extends Screen {
 
 		nbt.putCompound("SheetData", sheetData);
 		item.setData(nbt);
-		if (HalpLibe.isClient) {
+		if (HalpLibe.isClient && this.mc.currentWorld.isClientSide) {
 			ByteArrayOutputStream byteOutput = new ByteArrayOutputStream();
 			DataOutputStream dataOutputStream = new DataOutputStream(byteOutput);
 			try {
