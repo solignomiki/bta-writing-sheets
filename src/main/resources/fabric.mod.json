@@ -39,7 +39,7 @@
   ],
 
   "depends": {
-		"minecraft": "^7.2-beta",
+		"minecraft": "8.0",
     "fabricloader": ">=0.15.5"
   },
   "suggests": {

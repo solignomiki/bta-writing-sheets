@@ -9,12 +9,13 @@ import net.minecraft.client.gui.*;
 import net.minecraft.client.gui.guidebook.GuidebookPage;
 import net.minecraft.client.gui.guidebook.index.GuidebookPageIndex;
 import net.minecraft.client.gui.guidebook.search.GuidebookPageSearch;
+import net.minecraft.client.render.renderer.GLRenderer;
 import net.minecraft.core.item.ItemStack;
 import net.minecraft.core.lang.I18n;
 import net.minecraft.core.net.command.TextFormatting;
 import net.minecraft.core.net.packet.PacketCustomPayload;
 import net.minecraft.core.sound.SoundCategory;
-import net.minecraft.core.util.helper.ChatAllowedCharacters;
+import net.minecraft.core.util.helper.NetCharacters;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 import solignomiki.writingsheets.WritingSheets;
@@ -26,7 +27,6 @@ import java.io.IOException;
 import java.util.Random;
 
 public class ScreenSheetEditor extends Screen {
-	private static final String allowedCharacters;
 	protected ItemStack item;
 	protected byte color;
 	protected int xSize;
@@ -70,7 +70,7 @@ public class ScreenSheetEditor extends Screen {
 
 	public void render(int mouseX, int mouseY, float f) {
 		this.renderBackground();
-		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+		GLRenderer.setColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		this.mc.textureManager.loadTexture("/assets/writingsheets/textures/gui/sheet_2.png").bind();
 		int widthBG = this.width / 2 - 80;
 		this.drawTexturedModalRect(widthBG, 10, 0, 0, 175, 221);
@@ -78,15 +78,15 @@ public class ScreenSheetEditor extends Screen {
 		if (this.item.hasCustomName()) this.title = this.item.getCustomName();
 		else this.title = this.item.getDisplayName();
 
-		this.drawString(this.font, this.title, 10, 10, -1);
+		drawStringNoShadow(fontRenderer, this.title, 10, 10, -1);
 
 		for (int i = 0; i < 16; i++) {
 
-			this.drawStringNoShadow(this.font, TextFormatting.get(this.color) + this.text[i], this.width / 2 - 57, 25 + (i * 12), 16777215);
+			this.drawStringNoShadow(fontRenderer, TextFormatting.get(this.color) + this.text[i], this.width / 2 - 57, 25 + (i * 12), 16777215);
 			if (i == editLine) {
-				int textWidth = this.font.getStringWidth(this.text[i]);
-				this.drawStringNoShadow(this.font, TextFormatting.get(this.color) + "> ", this.width / 2 - 57 - 10, 25 + (i * 12), 16777215);
-				this.drawStringNoShadow(this.font, TextFormatting.get(this.color) + " <", this.width / 2 - 57 + textWidth + 3, 25 + (i * 12), 16777215);
+				int textWidth = fontRenderer.stringWidth(this.text[i]);
+				this.drawStringNoShadow(fontRenderer, TextFormatting.get(this.color) + "> ", this.width / 2 - 57 - 10, 25 + (i * 12), 16777215);
+				this.drawStringNoShadow(fontRenderer, TextFormatting.get(this.color) + " <", this.width / 2 - 57 + textWidth + 3, 25 + (i * 12), 16777215);
 			}
 		}
 		super.render(mouseX, mouseY, f);
@@ -121,7 +121,7 @@ public class ScreenSheetEditor extends Screen {
 			this.text[this.editLine] = this.text[this.editLine].substring(0, this.text[this.editLine].length() - 1);
 		}
 
-		if ((allowedCharacters.indexOf(eventCharacter) >= 0 || Character.isLetterOrDigit(eventCharacter)) && this.font.getStringWidth(this.text[this.editLine]) < 125) {
+		if ((NetCharacters.isAllowed(eventCharacter) || Character.isLetterOrDigit(eventCharacter)) && fontRenderer.stringWidth(this.text[this.editLine]) < 125) {
 			StringBuilder stringBuilder = new StringBuilder();
 			String[] textArray = this.text;
 			int editLine = this.editLine;
@@ -192,9 +192,5 @@ public class ScreenSheetEditor extends Screen {
 			Random r = new Random();
 			this.mc.sndManager.playSound("random.page", SoundCategory.GUI_SOUNDS, 0.9F, 1F + (r.nextFloat() - r.nextFloat()) * 0.3F);
 		}
-	}
-
-	static {
-		allowedCharacters = ChatAllowedCharacters.ALLOWED_CHARACTERS;
 	}
 }
