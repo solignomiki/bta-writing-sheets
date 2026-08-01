@@ -32,7 +32,7 @@ public class ModItems {
 	public static Item writingSheetItem = new ItemBuilder(WritingSheets.MOD_ID)
 		.setStackSize(1)
 		.setKey("writingsheets.writingsheet")
-		.build(new ItemWritingSheet(NamespaceID.getPermanent("writingsheets", "writingsheet"), Utilities.nextID()));
+		.build(new ItemWritingSheet("writingsheet", NamespaceID.fromPool(WritingSheets.MOD_ID, "writingsheet"), Utilities.nextID()));
 
 	public static void init() {
 

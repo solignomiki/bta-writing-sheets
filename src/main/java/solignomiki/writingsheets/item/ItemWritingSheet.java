@@ -6,14 +6,15 @@ import net.minecraft.core.item.Item;
 import net.minecraft.core.item.ItemStack;
 import net.minecraft.core.util.collection.NamespaceID;
 import net.minecraft.core.world.World;
+import org.jetbrains.annotations.NotNull;
 
 public class ItemWritingSheet extends Item {
-	public ItemWritingSheet(NamespaceID namespaceId, int id) {
-		super(namespaceId, id);
+	public ItemWritingSheet(@NotNull String name, NamespaceID namespaceId, int id) {
+		super(namespaceId, name, id);
 	}
 
 	@Override
-	public ItemStack onUseItem(ItemStack itemstack, World world, Player entityplayer) {
+	public ItemStack onUse(ItemStack itemstack, World world, Player entityplayer) {
 		CompoundTag sheetData;
 
 //		int slot = -1;

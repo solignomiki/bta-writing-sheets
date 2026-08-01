@@ -1,6 +1,6 @@
 package solignomiki.writingsheets;
 
-import net.minecraft.client.render.EntityRenderDispatcher;
+import net.minecraft.client.render.EntityRendererDispatcher;
 import net.minecraft.client.render.TileEntityRenderDispatcher;
 import net.minecraft.client.render.block.color.BlockColorDispatcher;
 import net.minecraft.client.render.block.model.BlockModelDispatcher;
@@ -16,9 +16,9 @@ public class ModModels implements ModelEntrypoint {
 
 	}
 	public void initItemModels(ItemModelDispatcher dispatcher) {
-		ModelHelper.setItemModel(ModItems.writingSheetItem, () -> new ItemModelWritingSheet(ModItems.writingSheetItem, WritingSheets.MOD_ID));
+		dispatcher.addDispatch(new ItemModelWritingSheet(ModItems.writingSheetItem, WritingSheets.MOD_ID));
 	}
-	public void initEntityModels(EntityRenderDispatcher dispatcher) {
+	public void initEntityModels(EntityRendererDispatcher dispatcher) {
 
 	}
 	public void initTileEntityModels(TileEntityRenderDispatcher dispatcher) {
